@@ -1,0 +1,20 @@
+<div class="ngdialog-message">
+        <div class="">
+            <h3>Modify existing expense</h3>
+        </div>
+        <div class="">&nbsp;</div>
+        <div class="">
+            <form ng-submit="modifyExpenseInDb(modExpense.expensename, modExpense.amount, modExpenseId)">
+                <div class="form-group">
+                    <label for="modexpensename">Expense Name</label>
+                    <input type="text" class="form-control input-sm" id="modexpensename" placeholder="Expense Name" ng-model="modExpense.expensename" required>
+                </div>
+                <div class="form-group">
+                    <label for="modamount">Amount</label>
+                    <input type="number" step="any" class="form-control input-sm" id="modamount" placeholder="Amount" ng-model="modExpense.amount" required>
+                </div>
+                <button type="submit" class="btn btn-info btn-sm">Modify</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click=cancelNgDialogue()>Cancel</button>
+            </form>
+        </div>
+    </div>

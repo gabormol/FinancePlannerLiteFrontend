@@ -1,0 +1,57 @@
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+               <ul class="breadcrumb">
+                   <li><a href="index.html#/actions">Select Action</a></li>
+                   <li class="active">My Template</li>
+               </ul>
+            </div>
+            <div class="col-xs-12">
+               <h1>Expense Template</h1>
+               
+            </div>
+        </div>
+        
+         <div class="row row-content" >
+            <div class="col-xs-12">
+                <div class="loader" ng-show="!showExpenses"></div>
+                <table ng-show="showExpenses">
+                    <tr align="center">
+                        <th bgcolor="#d6ccb0" width="250">
+                            <h3 align="center"><b><u>Expense Name</u></b></h3>
+                        </th>
+                        <th bgcolor="#d4cebd" width="150">
+                            <h3 align="center"><b><u>Amount</u></b></h3>
+                        </th>
+                         <th width="150" >
+                            <h3></h3>
+                        </th>
+                    </tr>
+                    <tr ng-repeat="expense in expenses | orderBy:'expensename'">
+                        <td bgcolor="#d6ccb0" align="center">
+                            <h4><b>{{expense.expensename}}</b></h4>
+                        </td>
+                        <td bgcolor="#d4cebd" align="center">
+                            <h4><b>{{expense.amount|currency}}</b></h4>
+                        </td> 
+                        <td align="center">
+                             <button id="btnEdit" class="btn btn-sm" ng-click="doModifyExpense(expense.expensename, expense.amount, expense._id)">Edit</button>
+                             <button id="btnRemove" class="btn btn-sm" ng-click="doDeleteExpense(expense._id)">Delete</button>
+                        </td> 
+                    </tr>
+                    
+                </table>
+                
+            </div>
+             <div class="col-xs-6">
+                <p style="padding:10px;"></p>
+                 <button id="btnAdd" class="btn btn-sm" ng-click=doAddExpense()>Add new</button>
+            </div>
+             <div class="col-xs-6">
+                <p style="padding:10px;"></p>
+                 <button id="btnFinisnTemplate" class="btn btn-sm" ng-click=backToActoins()>Finish Editting</button>
+            </div>
+       </div> 
+
+    </div>

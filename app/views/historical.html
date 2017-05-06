@@ -1,0 +1,62 @@
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+               <ul class="breadcrumb">
+                   <li><a href="index.html#/actions">Select Action</a></li>
+                   <li class="active">Historical Data</li>
+               </ul>
+            </div>
+            <div class="col-xs-12">
+               <h1>Historical Data</h1>
+            </div>
+            <br />
+            <div class="col-xs-12">
+                <form ng-submit="showHistory()">
+                    <label for="monthpickup">SelectMonth: </label>
+                        <input type="month" id="monthpickup" ng-model="monthYear">
+                    
+                    <button type="submit" class="btn btn-info btn-sm">Show</button>
+                </form>
+            </div>
+            <div class="col-xs-12">
+                <div class="loader" ng-show="showLoading"></div>
+                <table ng-show="showHistoricalData">
+                    <tr align="center">
+                        <th bgcolor="#d6ccb0" width="250">
+                            <h3 align="center"><b><u>Item Name</u></b></h3>
+                        </th>
+                        <th bgcolor="#d4cebd" width="150">
+                            <h3 align="center"><b><u>Planned</u></b></h3>
+                        </th>
+                        <th bgcolor="#bf9077" width="150">
+                            <h3 align="center"><b><u>Paid</u></b></h3>
+                        </th>
+                    </tr>
+                    <tr ng-repeat="item in timesheetReq[0].items | orderBy:'itemName'">
+                        <td bgcolor="#d6ccb0" align="center">
+                            <h4><b>{{item.itemName}}</b></h4>
+                        </td>
+                        <td bgcolor="#d4cebd" align="center">
+                            <h4><b>{{item.amountPlanned}}</b></h4>
+                        </td> 
+                        <td bgcolor="#bf9077" align="center">
+                            <h4><b>{{item.amountPaid}}</b></h4>
+                        </td> 
+                    </tr>
+                    <tr>
+                        <td bgcolor="#b55d4d" align="center">
+                            <h4><b>TOTAL:</b></h4>
+                        </td>
+                        <td bgcolor="#aa7369" align="center">
+                            <h4><b>{{statisticsReq[0].plannedToSpend}}</b></h4>
+                        </td> 
+                        <td bgcolor="#9b8e63" align="center">
+                            <h4><b>{{statisticsReq[0].totalSpent}}</b></h4>
+                        </td> 
+                    </tr>
+                    
+                </table>
+            </div>
+        </div>
+    </div>

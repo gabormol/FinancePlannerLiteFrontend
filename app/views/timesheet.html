@@ -1,0 +1,75 @@
+<div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+               <ul class="breadcrumb">
+                   <li><a href="index.html#/actions">Select Action</a></li>
+                   <li class="active">My Timesheet</li>
+               </ul>
+            </div>
+            <div class="col-xs-12">
+               <h1>Expense Tracking for this Month</h1>
+               
+            </div>
+        </div>
+        
+         <div class="row row-content" >
+            <div class="col-xs-12">
+                <div class="loader" ng-show="!showTable"></div>
+                <table ng-show="showTable">
+                    <tr align="center">
+                        <th bgcolor="#d6ccb0" width="250">
+                            <h3 align="center"><b><u>Item Name</u></b></h3>
+                        </th>
+                        <th bgcolor="#d4cebd" width="150">
+                            <h3 align="center"><b><u>Planned</u></b></h3>
+                        </th>
+                        <th bgcolor="#bf9077" width="150">
+                            <h3 align="center"><b><u>Paid</u></b></h3>
+                        </th>
+                         <th width="180" >
+                            <h3></h3>
+                        </th>
+                    </tr>
+                    <tr ng-repeat="item in timesheet[0].items | orderBy:'itemName'">
+                        <td bgcolor="#d6ccb0" align="center">
+                            <h4><b>{{item.itemName}}</b></h4>
+                        </td>
+                        <td bgcolor="#d4cebd" align="center">
+                            <h4><b>{{item.amountPlanned}}</b></h4>
+                        </td> 
+                        <td bgcolor="#bf9077" align="center">
+                            <h4><b>{{item.amountPaid}}</b></h4>
+                        </td> 
+                        <td align="center">
+                             <button id="btnEdit" class="btn btn-sm" ng-click="doModifyItem(item.itemName, item.amountPlanned, item.amountPaid, item._id)">Set Paid</button>
+                             <button id="btnRemove" class="btn btn-sm" ng-disabled="item.amountPaid > 0" ng-click="doDeleteItem(item._id)">Delete</button>
+                        </td> 
+                    </tr>
+                    <tr>
+                        <td bgcolor="#b55d4d" align="center">
+                            <h4><b>TOTAL:</b></h4>
+                        </td>
+                        <td bgcolor="#aa7369" align="center">
+                            <h4><b>{{statistics[0].plannedToSpend}}</b></h4>
+                        </td> 
+                        <td bgcolor="#9b8e63" align="center">
+                            <h4><b>{{statistics[0].totalSpent}}</b></h4>
+                        </td> 
+                        <td align="center"><div ng-if="balance<0"><font color="red"><h3><b>{{status}}</b></h3></font></div>
+                            <div ng-if="balance>=0"><font color="green"><h3><b>{{status}}</b></h3></font></div></td>
+                    </tr>
+                    
+                </table>
+                
+            </div>
+             <div class="col-xs-6">
+                <p style="padding:10px;"></p>
+                 <button id="btnAdd" class="btn btn-sm" ng-click=doAddItem()>New Item</button>
+            </div>
+             <div class="col-xs-6">
+                <p style="padding:10px;"></p>
+                 <button id="btnFinisnTemplate" class="btn btn-sm" ng-click=backToActoins()>Finish Updating</button>
+            </div>
+       </div> 
+
+    </div>

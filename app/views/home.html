@@ -1,0 +1,35 @@
+
+    <div class="row row-content">
+        <div class="col-xs-12 col col-sm-8 col-sm-offset-2">
+            <h1>Welcome to Finance Planner Lite </h1>
+            <h1>(Test Edition)</h1>
+        </div>
+        
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+            <div class="col-xs-12 col-sm-4 col-sm-offset-3">
+                <form ng-if="!loggedIn" ng-submit="doLogin()">
+                    <div class="form-group">
+                        
+                            <label class="sr-only" for="username">Username</label>
+                            <input type="text" class="form-control input-sm" id="username" placeholder="Username" ng-model="loginData.username">
+                        
+                    </div>
+                    <div class="form-group">
+                      
+                            <label class="sr-only" for="password">Password</label>
+                            <input type="password" class="form-control input-sm" id="password" placeholder="Password" ng-model="loginData.password">
+                       
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="rememberMe"> <b>Remember me </b>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-info btn-sm">Sign in</button>
+                    <a ng-click=openRegister()>Register new account</a>
+                </form>
+            </div>
+        </div>
+   
+    </div>
+
