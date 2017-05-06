@@ -419,7 +419,7 @@ angular.module('financeplannerApp')
        AuthFactory.logout();
         $scope.loggedIn = false;
         $scope.username = '';
-        $state.go('app'); // back to home
+        $state.go('app', {}, {reload: true}); // back to home
     };
     
     $rootScope.$on('login:Successful', function () {
@@ -454,6 +454,12 @@ angular.module('financeplannerApp')
         ngDialog.open({ template: 'views/register.html', scope: $scope, className: 'ngdialog-theme-default', controller:"RegisterController" });
     };
     
+}])
+.directive('redirectToactions', [ '$state', function($state) {
+    console.log("MY DIRECTIVE CALLED...");
+    $state.go('app.actions');
+    return {
+    }
 }])
 
 .controller('LoginController', ['$scope', '$state', 'ngDialog', '$localStorage', 'AuthFactory', function ($scope, $state, ngDialog, $localStorage, AuthFactory) {
