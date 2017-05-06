@@ -407,6 +407,7 @@ angular.module('financeplannerApp')
     $scope.username = '';
     
     if(AuthFactory.isAuthenticated()) {
+        console.log("USER IS AUTHENTICATED!");
         $scope.loggedIn = true;
         $scope.username = AuthFactory.getUsername();
     }

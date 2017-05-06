@@ -28,7 +28,8 @@
                     <button type="submit" class="btn btn-info btn-sm">Sign in</button>
                     <a ng-click=openRegister()>Register new account</a>
                 </form>
-                <div ng-if="loggedIn" redirect-toactions>
+                <div ng-if="loggedIn">
+                    <div redirect-toactions></div>
                 </div>
             </div>
         </div>
