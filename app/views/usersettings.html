@@ -1,0 +1,28 @@
+<div class="ngdialog-message">
+        <div class="">
+            <h3>Modify user settings</h3>
+        </div>
+        <div class="">&nbsp;</div>
+        <div class="">
+            <form ng-submit="modifyUserSettings()">
+                <div class="form-group">
+                    <label for="firstname">First Name</label>
+                    <input type="text" class="form-control input-sm" id="firstname" ng-model="userSettings.firstname">
+                </div>
+                <div class="form-group">
+                    <label for="lastname">First Name</label>
+                    <input type="text" class="form-control input-sm" id="lastname" ng-model="userSettings.lastname">
+                </div>
+                <div class="form-group">
+                    <label for="currency">Currency code</label>
+                    <input type="text" class="form-control input-sm" id="currency" ng-model="userSettings.currencySymbol" maxlength="4" required>
+                </div>
+                <div class="form-group">
+                    <label for="decimals">Number of decimals</label>
+                    <input type="number" step="any" min="0" max="3" class="form-control input-sm" id="decimals"  ng-model="userSettings.currencyDecimals" required>
+                </div>
+                <button type="submit" class="btn btn-info btn-sm">Modify</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click=cancelNgDialogue()>Cancel</button>
+            </form>
+        </div>
+    </div>

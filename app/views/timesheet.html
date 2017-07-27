@@ -35,10 +35,10 @@
                             <h4><b>{{item.itemName}}</b></h4>
                         </td>
                         <td bgcolor="#d4cebd" align="center">
-                            <h4><b>{{item.amountPlanned|currency}}</b></h4>
+                            <h4><b>{{item.amountPlanned|customcurrencyfilter:currencyCodeForItem}}</b></h4>
                         </td> 
                         <td bgcolor="#bf9077" align="center">
-                            <h4><b>{{item.amountPaid|currency}}</b></h4>
+                            <h4><b>{{item.amountPaid|customcurrencyfilter:currencyCodeForItem}}</b></h4>
                         </td> 
                         <td align="center">
                              <button id="btnEdit" class="btn btn-sm" ng-click="doModifyItem(item.itemName, item.amountPlanned, item.amountPaid, item._id)">Set Paid</button>
@@ -50,10 +50,10 @@
                             <h4><b>TOTAL:</b></h4>
                         </td>
                         <td bgcolor="#aa7369" align="center">
-                            <h4><b>{{statistics[0].plannedToSpend|currency}}</b></h4>
+                            <h4><b>{{statistics[0].plannedToSpend|customcurrencyfilter:currencyCodeForItem}}</b></h4>
                         </td> 
                         <td bgcolor="#9b8e63" align="center">
-                            <h4><b>{{statistics[0].totalSpent|currency}}</b></h4>
+                            <h4><b>{{statistics[0].totalSpent|customcurrencyfilter:currencyCodeForItem}}</b></h4>
                         </td> 
                         <td align="center"><div ng-if="balance<0"><font color="red"><h3><b>{{status}}</b></h3></font></div>
                             <div ng-if="balance>=0"><font color="green"><h3><b>{{status}}</b></h3></font></div></td>

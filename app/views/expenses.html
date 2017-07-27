@@ -24,6 +24,15 @@
                         <th bgcolor="#d4cebd" width="150">
                             <h3 align="center"><b><u>Amount</u></b></h3>
                         </th>
+                        <th bgcolor="#dba985" width="150">
+                            <h3 align="center"><b><u>Frequency</u></b></h3>
+                        </th>
+                        <th bgcolor="#95b2a3" width="150">
+                            <h3 align="center"><b><u>Next month</u></b></h3>
+                        </th>
+                        <th bgcolor="#d1cab9" width="150">
+                            <h3 align="center"><b><u>Last month</u></b></h3>
+                        </th>
                          <th width="150" >
                             <h3></h3>
                         </th>
@@ -33,10 +42,19 @@
                             <h4><b>{{expense.expensename}}</b></h4>
                         </td>
                         <td bgcolor="#d4cebd" align="center">
-                            <h4><b>{{expense.amount|currency}}</b></h4>
+                            <h4><b>{{expense.amount|customcurrencyfilter:currencyCodeForExpense}}</b></h4>
                         </td> 
+                        <td bgcolor="#dba985" align="center">
+                            <h4><b>{{expense.frequency}}</b></h4>
+                        </td>
+                        <td bgcolor="#95b2a3" align="center">
+                            <h4><b>{{expense.nextmonth}}</b></h4>
+                        </td>
+                        <td bgcolor="#d1cab9" align="center">
+                            <h4><b>{{expense.duetomonth | duetomonthfilter}}</b></h4>
+                        </td>
                         <td align="center">
-                             <button id="btnEdit" class="btn btn-sm" ng-click="doModifyExpense(expense.expensename, expense.amount, expense._id)">Edit</button>
+                             <button id="btnEdit" class="btn btn-sm" ng-click="doModifyExpense(expense.expensename, expense.amount, expense._id, expense.frequency, expense.nextmonth, expense.duetomonth)">Edit</button>
                              <button id="btnRemove" class="btn btn-sm" ng-click="doDeleteExpense(expense._id)">Delete</button>
                         </td> 
                     </tr>

@@ -8,8 +8,7 @@ angular.module('financeplannerApp')
     
     AuthFactory.myData().query(
         function (response){
-            console.log(response);
-            if(response[0].firstname.length>0){
+            if(typeof response[0].firstname !== 'undefined' && response[0].firstname.length>0){
                 $scope.firstName = " " + response[0].firstname;
             } else {
                 
@@ -18,7 +17,7 @@ angular.module('financeplannerApp')
         function (response){
             $scope.message = "Get name error: " + response.status + " " + response.statusText;
         }
-    )
+    );
     
 }])
 
@@ -27,12 +26,22 @@ angular.module('financeplannerApp')
     
 }])
 
-.controller('HistoricalDataController', ['$scope', 'timesheetFactory', 'statisticsFactory', 'ngDialog', function ($scope, timesheetFactory, statisticsFactory, ngDialog) {
+.controller('HistoricalDataController', ['$scope', 'timesheetFactory', 'statisticsFactory', 'userSettingsFactory', 'ngDialog', function ($scope, timesheetFactory, statisticsFactory, userSettingsFactory, ngDialog) {
     
     $scope.monthYear = '';
-    console.log($scope.monthYear);
     $scope.showHistoricalData = false;
     $scope.showLoading = false;
+    
+    $scope.currencyCodeInHC = '';
+    
+    userSettingsFactory.query(
+            function (response) {
+                $scope.currencyCodeInHC = response[0].currencySymbol;
+            },
+            function (response) {
+                $scope.message = "Error: " + response.status + " " + response.statusText;
+            }
+        );
     
     $scope.showHistory = function(){
         
@@ -42,8 +51,6 @@ angular.module('financeplannerApp')
         var reqMonthString = aYear.concat(aMonth);
         
         $scope.showLoading = true;
-        
-        console.log("Requested month: " + reqMonthString);
         
         $scope.timesheetReq = {};
         $scope.statisticsReq = {};
@@ -55,7 +62,6 @@ angular.module('financeplannerApp')
                     $scope.statisticsReq = response;
                     $scope.showHistoricalData = true;
                     $scope.showLoading = false;
-                    console.log($scope.statisticsReq);
                 },
                 function (response) {
                     ngDialog.open({ template: 'views/notfound.html', scope: $scope, className: 'ngdialog-theme-default'});
@@ -64,7 +70,6 @@ angular.module('financeplannerApp')
                 }
             );
                 $scope.timesheetReq = response;
-                console.log($scope.timesheetReq);
             },
             function (response) {
                 $scope.showLoading = false;
@@ -75,38 +80,48 @@ angular.module('financeplannerApp')
         );
         
         
-    }
+    };
 }])
 
-.controller('TimesheetController', ['$scope', 'timesheetFactory', 'statisticsFactory', 'ngDialog', '$state', function ($scope, timesheetFactory, statisticsFactory, ngDialog, $state) {
+.controller('TimesheetController', ['$scope', 'timesheetFactory', 'userSettingsFactory', 'statisticsFactory', 'ngDialog', '$state', function ($scope, timesheetFactory, userSettingsFactory, statisticsFactory, ngDialog, $state) {
     
     $scope.message = "Loading ...";
     
     $scope.showTable = false;
     
     $scope.balance = 0;
-    $scope.status = "ON TRACK"
+    $scope.status = "ON TRACK";
     
     $scope.newItem = {
         itemName: '',
         amountPlanned: '',
         amountPaid: '',
         paid: false
-    }
+    };
     
     $scope.modItem = {
         itemName: '',
         amountPlanned: '',
         amountPaid: '',
         paid: false
-    }
+    };
+    
+    $scope.currencyCodeForItem = '';
+    
+    userSettingsFactory.query(
+            function (response) {
+                $scope.currencyCodeForItem = response[0].currencySymbol;
+            },
+            function (response) {
+                $scope.message = "Error: " + response.status + " " + response.statusText;
+            }
+        );
     
     $scope.timesheet = {};
     var timesheet = timesheetFactory.query(
             function (response) {
                 $scope.timesheet = response;
                 $scope.showTable = true;
-                console.log($scope.timesheet);
             },
             function (response) {
                 $scope.message = "Error: " + response.status + " " + response.statusText;
@@ -124,17 +139,13 @@ angular.module('financeplannerApp')
     statisticsFactory.query(
             function (response) {
                 $scope.statistics = response;
-                console.log($scope.statistics);
-                console.log($scope.statistics.length);
                 if ($scope.statistics.length > 0){
                     $scope.balance = $scope.statistics[0].plannedToSpend - $scope.statistics[0].totalSpent;
                 } else {
                     $scope.balance = 0;
-                    console.log("PAGE RELOAD");
                     $state.go($state.current, {}, {reload: true});                 
                 }
                 
-                console.log("Balance: " + $scope.balance);
                 if ($scope.balance >= 0){
                     $scope.status = "ON TRACK";
                 } else {
@@ -150,8 +161,6 @@ angular.module('financeplannerApp')
         
         $scope.timesheetId = $scope.timesheet[0]._id;
         
-        console.log('Adding new item to timesheet ', $scope.timesheetId);
-        
             ngDialog.open({ template: 'views/additem.html', scope: $scope, className: 'ngdialog-theme-default',    controller:"TimesheetHandlingController" });
 
     };
@@ -165,8 +174,6 @@ angular.module('financeplannerApp')
         $scope.modItem.amountPlanned = newAmountPlanned;
         $scope.modItem.amountPaid = newAmountPaid;
         
-        console.log('Modifying item ' + itemId + " from: " + $scope.timesheetId);
-        
             ngDialog.open({ template: 'views/modifyitem.html', scope: $scope, className: 'ngdialog-theme-default',    controller:"TimesheetHandlingController" });
 
     };
@@ -176,23 +183,18 @@ angular.module('financeplannerApp')
         $scope.timesheetId = $scope.timesheet[0]._id;
         $scope.itemId = itemId;
         
-        console.log('Deleting item ' + itemId + " from: " + $scope.timesheetId);
-        
             ngDialog.open({ template: 'views/deleteitem.html', scope: $scope, className: 'ngdialog-theme-default',    controller:"TimesheetHandlingController" });
 
     };
     
     $scope.backToActoins = function(){
         $state.go('app.actions');
-    }
+    };
 }])
 
 .controller('TimesheetHandlingController', ['$scope', 'timesheetFactory', 'ngDialog', '$state', 'statisticsFactory', function ($scope, timesheetFactory, ngDialog, $state, statisticsFactory) {
     
     $scope.addItemToDb = function(timesheetId){
-        console.log("Add new item to: " + timesheetId + " timesheet");
-        console.log("New Values: " + $scope.newItem.itemName + " " + $scope.newItem.amountPlanned);
-        //console.log($scope.newItem);
         
         timesheetFactory.save({id: timesheetId}, $scope.newItem ).$promise.then(
                             function (response) {
@@ -207,11 +209,9 @@ angular.module('financeplannerApp')
                                 $scope.showLoading = false;
                             });
         
-    }
+    };
     
     $scope.modifyItemFromTimesheet = function(newItemName, newAmountPlanned, newAmountPaid, timesheetId, itemId){
-        console.log("Modify item: " + itemId + " from: " + timesheetId);
-        console.log("New values: " + newItemName + " " + newAmountPlanned + " " + newAmountPaid);
         
         timesheetFactory.update({id: timesheetId, itemId: itemId}, $scope.modItem ).$promise.then(
                             function (response) {
@@ -225,10 +225,9 @@ angular.module('financeplannerApp')
                                 ngDialog.close();
                                 $scope.showLoading = false;
                             });
-    }
+    };
     
     $scope.deleteItemFromTimesheet = function(timesheetId, itemId){
-        console.log("Delete item: " + itemId + " from: " + timesheetId);
         
         timesheetFactory.delete({id: timesheetId, itemId: itemId}, $scope.newItem ).$promise.then(
                             function (response) {
@@ -242,15 +241,13 @@ angular.module('financeplannerApp')
                                 ngDialog.close();
                                 $scope.showLoading = false;
                             });
-    }
+    };
     
     var updateStatistics = function(){
         statisticsFactory.query(
             function (response) {
                 $scope.statistics = response;
-                console.log($scope.statistics);
                 $scope.balance = $scope.statistics[0].plannedToSpend - $scope.statistics[0].totalSpent;
-                console.log("Balance: " + $scope.balance);
                 if ($scope.balance >= 0){
                     $scope.status = "ON TRACK";
                 } else {
@@ -261,57 +258,91 @@ angular.module('financeplannerApp')
                 $scope.message = "Error: " + response.status + " " + response.statusText;
             }
         );
-    }
+    };
     
     $scope.cancelNgDialogue = function() {
         ngDialog.close();
-    }
+    };
     
 }])
 
-.controller('ExpenseController', ['$scope', 'expenseFactory', 'ngDialog', '$state', function ($scope, expenseFactory, ngDialog, $state) {
+.controller('ExpenseController', ['$scope', 'expenseFactory', 'userSettingsFactory', 'ngDialog', '$state', function ($scope, expenseFactory, userSettingsFactory, ngDialog, $state) {
 
     $scope.showExpenses = false;
     
-    $scope.expenses = [];
-    var expenses = expenseFactory.query(
+    $scope.currencyCodeForExpense = '';
+    
+    userSettingsFactory.query(
             function (response) {
-                $scope.expenses = response;
-                $scope.showExpenses = true;
-                console.log($scope.expenses);
+                $scope.currencyCodeForExpense = response[0].currencySymbol;
             },
             function (response) {
                 $scope.message = "Error: " + response.status + " " + response.statusText;
             }
         );
     
-    $scope.newExpense = {
+    $scope.expenses = [];
+    var expenses = expenseFactory.query(
+            function (response) {
+                $scope.expenses = response;
+                $scope.showExpenses = true;
+            },
+            function (response) {
+                $scope.message = "Error: " + response.status + " " + response.statusText;
+            }
+        );
+    
+    var newDate = new Date();
+    var nextMonth = (parseInt(newDate.getMonth()) + 2);
+    
+    if (nextMonth > 12){
+        nextMonth = nextMonth - 12;
+    }
+    
+    var newExpense = {
         expensename: '',
         amount: '',
         frequency: 12,
-        createdate: new Date()
-    }
+        createdate: newDate,
+        nextmonth: nextMonth,
+        duetomonth: 999912
+    };
+    
+    var modExpense = {
+        expensename: '',
+        amount: '',
+        frequency: '',
+        createdate: newDate,
+        nextmonth: nextMonth
+    };
+    
+    $scope.newExpense = newExpense;
+    $scope.modExpense = modExpense;
     
     $scope.doAddExpense = function() {
-        console.log('Adding new expense', $scope.registration);
         
             ngDialog.open({ template: 'views/addexpense.html', scope: $scope, className: 'ngdialog-theme-default',    controller:"ExpenseHandlingController" });
 
     };
     
-    $scope.doModifyExpense = function(newName, newAmount, objectId) {
-        console.log('Modifying existing expense ' + objectId + " " + newName + " " + newAmount);
+    $scope.doModifyExpense = function(prevName, prevAmount, objectId, prevFreq, prevNextMonth, dueToMonth) {
         
-        $scope.modExpenseName = newName;
-        $scope.modExpenseAmount = newAmount;
+        // Reading theparameters for the Edit dialogue
+        
+        $scope.modExpenseName = prevName;
+        $scope.modExpenseAmount = prevAmount;
         $scope.modExpenseId = objectId;
+        $scope.modExpenseFreq = prevFreq;
+        $scope.modExpenseNextMonth = prevNextMonth;
+        $scope.duetomonth = dueToMonth;
+        
+        // Open the Edit dialogue
         
             ngDialog.open({ template: 'views/modifyexpense.html', scope: $scope, className: 'ngdialog-theme-default',    controller:"ExpenseHandlingController" });
 
     };
     
     $scope.doDeleteExpense = function(objectId) {
-        console.log('Deleting expense ' + objectId);
         
         $scope.delExpenseId = objectId;
         
@@ -321,85 +352,149 @@ angular.module('financeplannerApp')
     
     $scope.backToActoins = function(){
         $state.go('app.actions');
-    }
+    };
     
 }])
 
 .controller('ExpenseHandlingController', ['$scope', 'expenseFactory', 'ngDialog', '$state', function ($scope, expenseFactory, ngDialog, $state) {
 
+    var currentYear = parseInt(new Date().getFullYear());
+    var currentMonth = parseInt(new Date().getMonth());
+    $scope.dueToMonthYear = new Date(currentYear+2, currentMonth +2, 1);  
     
-    $scope.newExpense = {
-        expensename: '',
-        amount: '',
-        frequency: 12,
-        createdate: new Date()
-    }
-    
-    $scope.modExpense = {
-        expensename: '',
-        amount: '',
-        frequency: 12,
-        createdate: new Date()
+    if (typeof $scope.duetomonth !== 'undefined'){
+        var aYear = parseInt($scope.duetomonth.toString().substring(0, 4)); 
+        var aMonth = parseInt($scope.duetomonth.toString().substring(4, 6));
+        $scope.duetoMonthForMP = new Date(aYear, aMonth-1, 1);
     }
     
     $scope.addExpenseToDb = function(){
-        console.log($scope.newExpense);
+        
+        var date = new Date($scope.dueToMonthYear);
+        var aYear = date.getFullYear().toString();
+        var aMonth = (date.getMonth()+1).toString();
+        var reqMonthString = aYear.concat(aMonth);
+        
+        $scope.newExpense.duetomonth = reqMonthString;
         
         expenseFactory.save($scope.newExpense).$promise.then(
                             function (response) {
                                 $scope.showLoading = false;
+                                ngDialog.close();
+                                $state.go($state.current, {}, {reload: true});
                                 
                             },
                             function (response) {
                                 $scope.message = "Error: " + response.status + " " + response.statusText;
                                 $scope.showLoading = false;
                             });
-        ngDialog.close();
-        $state.go($state.current, {}, {reload: true});
-    }
+    };
     
     $scope.modExpense.amount = $scope.modExpenseAmount;
     $scope.modExpense.expensename = $scope.modExpenseName;
+    $scope.modExpense.frequency = $scope.modExpenseFreq;
+    $scope.modExpense.nextmonth = $scope.modExpenseNextMonth;
+    $scope.modExpense.duetomonth = $scope.duetomonth;
     
     $scope.modifyExpenseInDb = function(newName, newAmount, id){
-        console.log("New Parameters: " + newName + " " + newAmount + " " + id);
+        
+        var date = new Date($scope.duetoMonthForMP);
+        var aYear = date.getFullYear().toString();
+        var aMonth = (date.getMonth()+1).toString();
+        var reqMonthString = aYear.concat(aMonth);
+        
+        $scope.modExpense.duetomonth = reqMonthString;
         
         expenseFactory.update({id: id}, $scope.modExpense).$promise.then(
                             function (response) {
                                 $scope.showLoading = false;
+                                ngDialog.close();
+                                $state.go($state.current, {}, {reload: true});
                                 
                             },
                             function (response) {
                                 $scope.message = "Error: " + response.status + " " + response.statusText;
                                 $scope.showLoading = false;
                             });
-        ngDialog.close();
-        $state.go($state.current, {}, {reload: true});
-    }
+    };
     
     $scope.deleteExpenseInDb = function(id){
-        console.log("Delete expense: " + id);
-        
+                
         expenseFactory.delete({id: id}).$promise.then(
                             function (response) {
                                 $scope.showLoading = false;
+                                ngDialog.close();
+                                $state.go($state.current, {}, {reload: true});
                                 
                             },
                             function (response) {
                                 $scope.message = "Error: " + response.status + " " + response.statusText;
                                 $scope.showLoading = false;
                             });
-        ngDialog.close();
-        $state.go($state.current, {}, {reload: true});
-    }
+    };
     
     $scope.cancelNgDialogue = function() {
         ngDialog.close();
-    }
+    };
     
     
 }])
 
+.filter('duetomonthfilter', function() {
+  return function(input /*, param1, param2*/) {
+      
+    if (typeof input !== 'undefined'){
+        var aYear = parseInt(input.toString().substring(0, 4)); 
+        var aMonth = parseInt(input.toString().substring(4, 6));
+    
+        var out = aMonth.toString().concat(" / ").concat(aYear.toString());
+    
+        return out;
+    } else {
+        return " - ";
+    }
+  };
+})
+
+.filter('customcurrencyfilter', function() {
+  return function(input, currCode) {
+      
+      if (typeof input !== 'undefined' && typeof currCode !== 'undefined'){
+          
+          console.log("Price and input defined: " ); 
+          
+          var price = input.toString();
+          var pointsNeeded = Math.floor((price.length-1)/3);
+          console.log("points needed: " + pointsNeeded);
+          
+		  if (pointsNeeded > 0){
+			var priceFormatted = price.split("");
+			console.log("priceFormatted: " + priceFormatted.toString() + " " + priceFormatted.length);
+          
+			switch (pointsNeeded){
+				case 1: priceFormatted.splice( (priceFormatted.length-3), 0, "." ); break;
+				case 2: priceFormatted.splice( (priceFormatted.length-3), 0, "." ); priceFormatted.splice( (priceFormatted.length-7), 0, "." ); break;
+				case 3: priceFormatted.splice( (priceFormatted.length-3), 0, "." ); priceFormatted.splice( (priceFormatted.length-7), 0, "." ); priceFormatted.splice( (priceFormatted.length-11), 0, "." ); break;
+				case 4: priceFormatted.splice( (priceFormatted.length-3), 0, "." ); priceFormatted.splice( (priceFormatted.length-7), 0, "." ); priceFormatted.splice( (priceFormatted.length-11), 0, "." ); priceFormatted.splice( (priceFormatted.length-15), 0, "." ); break;
+				case 5: priceFormatted.splice( (priceFormatted.length-3), 0, "." ); priceFormatted.splice( (priceFormatted.length-7), 0, "." ); priceFormatted.splice( (priceFormatted.length-11), 0, "." ); priceFormatted.splice( (priceFormatted.length-15), 0, "." ); break; priceFormatted.splice( (priceFormatted.length-19), 0, "." ); break;
+			}
+			
+			console.log("priceFormatted new: " + priceFormatted.toString());
+			
+			price = priceFormatted.join('');
+			
+			console.log("new price string: " + price);
+		  }
+          
+		  
+          var out = price.concat(" ").concat(currCode.toString());
+          return out;
+      } else {
+          return " - ";
+      }
+    
+  };
+})
 
 .controller('HeaderController', ['$scope', '$state', '$rootScope', 'ngDialog', '$localStorage', 'AuthFactory', function ($scope, $state, $rootScope, ngDialog, $localStorage, AuthFactory) {
 
@@ -407,13 +502,16 @@ angular.module('financeplannerApp')
     $scope.username = '';
     
     if(AuthFactory.isAuthenticated()) {
-        console.log("USER IS AUTHENTICATED!");
         $scope.loggedIn = true;
         $scope.username = AuthFactory.getUsername();
     }
         
     $scope.openLogin = function () {
         ngDialog.open({ template: 'views/login.html', scope: $scope, className: 'ngdialog-theme-default', controller:"LoginController" });
+    };
+    
+    $scope.setUserProps = function () {
+        ngDialog.open({ template: 'views/usersettings.html', scope: $scope, className: 'ngdialog-theme-default', controller:"UserSettingsController" });
     };
     
     $scope.logOut = function() {
@@ -456,11 +554,75 @@ angular.module('financeplannerApp')
     };
     
 }])
+
+.controller('UserSettingsController', ['$scope', 'userSettingsFactory', 'ngDialog', '$state', function ($scope, userSettingsFactory, ngDialog, $state) {
+    
+    $scope.userSettings = {
+        currencyDecimals : '',
+        currencySymbol : '',
+        lastname : '',
+        firstname : ''
+    };
+    
+    userSettingsFactory.query(
+            function (response) {
+                $scope.userSettings.currencyDecimals = response[0].currencyDecimals;
+                $scope.userSettings.currencySymbol = response[0].currencySymbol;
+                $scope.userSettings.lastname = response[0].lastname;
+                $scope.userSettings.firstname = response[0].firstname;
+            },
+            function (response) {
+                $scope.message = "Error: " + response.status + " " + response.statusText;
+            }
+        );
+    
+    $scope.modifyUserSettings = function() {
+        userSettingsFactory.update($scope.userSettings).$promise.then(
+                            function (response) {
+                                $scope.showLoading = false;
+                                ngDialog.close();
+                                $state.go($state.current, {}, {reload: true});
+                                
+                            },
+                            function (response) {
+                                $scope.message = "Error: " + response.status + " " + response.statusText;
+                                $scope.showLoading = false;
+                            });
+    };
+    
+    $scope.cancelNgDialogue = function() {
+        ngDialog.close();
+    };
+    
+    
+}])
+
 .directive('redirectToactions', [ '$state', function($state) {
-    console.log("MY DIRECTIVE CALLED...");
     $state.go('app.actions');
     return {
-    }
+    };
+}])
+
+.directive('freqnotallowed', [ '$state', function($state) {
+    return {
+      require: 'ngModel',
+      link: function(scope, elem, attr, ngModel) {
+          var blacklist = attr.freqnotallowed.split(',');
+
+          //For DOM -> model validation
+          ngModel.$parsers.unshift(function(value) {
+             var valid = blacklist.indexOf(value) === -1;
+             ngModel.$setValidity('freqnotallowed', valid);
+             return valid ? value : undefined;
+          });
+
+          //For model -> DOM validation
+          ngModel.$formatters.unshift(function(value) {
+             ngModel.$setValidity('freqnotallowed', blacklist.indexOf(value) === -1);
+             return value;
+          });
+      }
+   };
 }])
 
 .controller('LoginController', ['$scope', '$state', 'ngDialog', '$localStorage', 'AuthFactory', function ($scope, $state, ngDialog, $localStorage, AuthFactory) {
@@ -489,7 +651,6 @@ angular.module('financeplannerApp')
     $scope.loginData={};
     
     $scope.doRegister = function() {
-        console.log('Doing registration', $scope.registration);
 
         AuthFactory.register($scope.registration, function(){
             if ($scope.loggedIn){

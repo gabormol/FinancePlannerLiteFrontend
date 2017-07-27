@@ -38,10 +38,10 @@
                             <h4><b>{{item.itemName}}</b></h4>
                         </td>
                         <td bgcolor="#d4cebd" align="center">
-                            <h4><b>{{item.amountPlanned|currency}}</b></h4>
+                            <h4><b>{{item.amountPlanned|customcurrencyfilter:currencyCodeInHC}}</b></h4>
                         </td> 
                         <td bgcolor="#bf9077" align="center">
-                            <h4><b>{{item.amountPaid|currency}}</b></h4>
+                            <h4><b>{{item.amountPaid|customcurrencyfilter:currencyCodeInHC}}</b></h4>
                         </td> 
                     </tr>
                     <tr>
@@ -49,10 +49,10 @@
                             <h4><b>TOTAL:</b></h4>
                         </td>
                         <td bgcolor="#aa7369" align="center">
-                            <h4><b>{{statisticsReq[0].plannedToSpend|currency}}</b></h4>
+                            <h4><b>{{statisticsReq[0].plannedToSpend|customcurrencyfilter:currencyCodeInHC}}</b></h4>
                         </td> 
                         <td bgcolor="#9b8e63" align="center">
-                            <h4><b>{{statisticsReq[0].totalSpent|currency}}</b></h4>
+                            <h4><b>{{statisticsReq[0].totalSpent|customcurrencyfilter:currencyCodeInHC}}</b></h4>
                         </td> 
                     </tr>                    
                 </table>

@@ -4,7 +4,7 @@
         </div>
         <div class="">&nbsp;</div>
         <div class="">
-            <form ng-submit="addExpenseToDb()">
+            <form name="newExpenseForm" ng-submit="addExpenseToDb()">
                 <div class="form-group">
                     <label for="newexpensename">Expense Name</label>
                     <input type="text" class="form-control input-sm" id="newexpensename" placeholder="Expense Name" ng-model="newExpense.expensename" required>
@@ -13,7 +13,21 @@
                     <label for="newamount">Amount</label>
                     <input type="number" step="any" class="form-control input-sm" id="newamount" placeholder="Amount" ng-model="newExpense.amount" required>
                 </div>
-                <button type="submit" class="btn btn-info btn-sm">Add</button>
+                <div class="form-group">
+                    <label for="nextmonth">Next month</label>
+                    <input type="number" min="1" max="12" class="form-control input-sm" id="nextmonth" ng-model="newExpense.nextmonth" required>
+                </div>
+                <div class = "form-group" ng-class="{ 'has-error' : newExpenseForm.frequency.$invalid }">
+                    <label for="frequency">Frequency</label>
+                    <input type="number" min="1" max="12" name="frequency" class="form-control input-sm" id="nextmonth" ng-model="newExpense.frequency" freqnotallowed="5,7,8,9,10,11" required>
+                    <span ng-show="newExpenseForm.frequency.$invalid" class="help-block">This frequency is not allowed</span>
+                </div>
+                <div class="form-group">
+                    <label for="monthpickup">Due to: </label>
+                    <input type="month" id="monthpickup" ng-model="dueToMonthYear">
+                </div>
+                
+                <button type="submit" ng-disabled="newExpenseForm.$invalid" class="btn btn-info btn-sm">Add</button>
                 <button type="button" class="btn btn-default btn-sm" ng-click=cancelNgDialogue()>Cancel</button>
             </form>
         </div>

@@ -50,7 +50,7 @@ angular.module('financeplannerApp')
         getObject: function (key, defaultValue) {
             return JSON.parse($window.localStorage[key] || defaultValue);
         }
-    }
+    };
 }])
 
 .factory('AuthFactory', ['$resource', '$http', '$localStorage', '$rootScope', '$window', 'baseURL', 'ngDialog', function($resource, $http, $localStorage, $rootScope, $window, baseURL, ngDialog){
@@ -71,7 +71,6 @@ angular.module('financeplannerApp')
  
   function storeUserCredentials(credentials) {
     $localStorage.storeObject(TOKEN_KEY, credentials);
-      console.log('TOKEN STORED ' + TOKEN_KEY + '  ' + JSON.stringify(credentials));
     useCredentials(credentials);
   }
  
@@ -82,7 +81,6 @@ angular.module('financeplannerApp')
  
     // Set the token as header for your requests!
     $http.defaults.headers.common['x-access-token'] = authToken;
-      console.log('TOKEN SET TO HEADER!!!');
   }
  
   function destroyUserCredentials() {
@@ -91,7 +89,6 @@ angular.module('financeplannerApp')
     isAuthenticated = false;
     $http.defaults.headers.common['x-access-token'] = authToken;
     $localStorage.remove(TOKEN_KEY);
-      console.log('TOKEN REMOVED!!!');
   }
      
     authFac.login = function(loginData, callback) {
@@ -113,7 +110,7 @@ angular.module('financeplannerApp')
                     response.data.err.name + '</p></div>' +
                 '<div class="ngdialog-buttons">\
                     <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click=confirm("OK")>OK</button>\
-                </div>'
+                </div>';
             
                 ngDialog.openConfirm({ template: message, plain: 'true'});
            }
@@ -160,7 +157,7 @@ angular.module('financeplannerApp')
         return $resource(baseURL + "users/mydata", null, {
                 
             });
-    }
+    };
     
     authFac.isAuthenticated = function() {
         return isAuthenticated;
@@ -175,6 +172,16 @@ angular.module('financeplannerApp')
     
     return authFac;
     
+}])
+
+.factory('userSettingsFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
+
+    return $resource(baseURL + "users/mydata", null, {
+            'update': {
+                method: 'PUT'
+            }
+        });
+
 }])
 
 // this is unused code so far...

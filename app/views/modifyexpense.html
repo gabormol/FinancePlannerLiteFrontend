@@ -4,7 +4,7 @@
         </div>
         <div class="">&nbsp;</div>
         <div class="">
-            <form ng-submit="modifyExpenseInDb(modExpense.expensename, modExpense.amount, modExpenseId)">
+            <form name="modExpenseForm" ng-submit="modifyExpenseInDb(modExpense.expensename, modExpense.amount, modExpenseId, modExpense.frequency, modExpense.nextmonth)">
                 <div class="form-group">
                     <label for="modexpensename">Expense Name</label>
                     <input type="text" class="form-control input-sm" id="modexpensename" placeholder="Expense Name" ng-model="modExpense.expensename" required>
@@ -13,7 +13,20 @@
                     <label for="modamount">Amount</label>
                     <input type="number" step="any" class="form-control input-sm" id="modamount" placeholder="Amount" ng-model="modExpense.amount" required>
                 </div>
-                <button type="submit" class="btn btn-info btn-sm">Modify</button>
+                <div class="form-group">
+                    <label for="nextmonth">Next month</label>
+                    <input type="number" min="1" max="12" class="form-control input-sm" id="nextmonth" ng-model="modExpense.nextmonth" required>
+                </div>
+                <div class = "form-group" ng-class="{ 'has-error' : modExpenseForm.frequency.$invalid }">
+                    <label for="frequency">Frequency</label>
+                    <input type="number" min="1" max="12" name="frequency" class="form-control input-sm" id="nextmonth" ng-model="modExpense.frequency" freqnotallowed="5,7,8,9,10,11" required>
+                    <span ng-show="modExpenseForm.frequency.$invalid" class="help-block">This frequency is not allowed</span>
+                </div>
+                <div class="form-group">
+                    <label for="monthpickup">Due to: </label>
+                    <input type="month" id="monthpickup" ng-model="duetoMonthForMP" init-date="duetoMonthForMP">
+                </div>
+                <button type="submit" ng-disabled="modExpenseForm.$invalid"class="btn btn-info btn-sm">Modify</button>
                 <button type="button" class="btn btn-default btn-sm" ng-click=cancelNgDialogue()>Cancel</button>
             </form>
         </div>
