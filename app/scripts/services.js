@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('financeplannerApp')
-.constant("baseURL", "https://financeplannerlite.mybluemix.net/")
+//.constant("baseURL", "https://financeplannerlite.mybluemix.net/")
+.constant("baseURL", "http://104.155.156.243:3000/")
+//104.155.156.243
 //.constant("baseURL", "http://localhost:3000/")
 .factory('expenseFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
 

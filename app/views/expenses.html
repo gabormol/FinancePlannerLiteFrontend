@@ -13,7 +13,7 @@
             </div>
         </div>
         
-         <div class="row row-content" >
+         <div class="row row-content">
             <div class="col-xs-12">
                 <div class="loader" ng-show="!showExpenses"></div>
                 <table ng-show="showExpenses">
@@ -54,7 +54,7 @@
                             <h4><b>{{expense.duetomonth | duetomonthfilter}}</b></h4>
                         </td>
                         <td align="center">
-                             <button id="btnEdit" class="btn btn-sm" ng-click="doModifyExpense(expense.expensename, expense.amount, expense._id, expense.frequency, expense.nextmonth, expense.duetomonth)">Edit</button>
+                             <button id="btnEdit" class="btn btn-sm" ng-keep-scroll="expenses.scrollY" ng-click="doModifyExpense(expense.expensename, expense.amount, expense._id, expense.frequency, expense.nextmonth, expense.duetomonth)">Edit</button>
                              <button id="btnRemove" class="btn btn-sm" ng-click="doDeleteExpense(expense._id)">Delete</button>
                         </td> 
                     </tr>
@@ -62,11 +62,11 @@
                 </table>
                 
             </div>
-             <div class="col-xs-6">
+             <div id="addExpenseBtn" class="col-xs-6">
                 <p style="padding:10px;"></p>
                  <button id="btnAdd" class="btn btn-sm" ng-click=doAddExpense()>Add new</button>
             </div>
-             <div class="col-xs-6">
+             <div id="backToActionsBtn" class="col-xs-6">
                 <p style="padding:10px;"></p>
                  <button id="btnFinisnTemplate" class="btn btn-sm" ng-click=backToActoins()>Finish Editting</button>
             </div>

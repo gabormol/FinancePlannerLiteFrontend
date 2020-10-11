@@ -26,7 +26,7 @@
                         <th bgcolor="#bf9077" width="150">
                             <h3 align="center"><b><u>Paid</u></b></h3>
                         </th>
-                         <th width="180" >
+                         <th width="300" >
                             <h3></h3>
                         </th>
                     </tr>
@@ -40,10 +40,14 @@
                         <td bgcolor="#bf9077" align="center">
                             <h4><b>{{item.amountPaid|customcurrencyfilter:currencyCodeForItem}}</b></h4>
                         </td> 
-                        <td align="center">
-                             <button id="btnEdit" class="btn btn-sm" ng-click="doModifyItem(item.itemName, item.amountPlanned, item.amountPaid, item._id)">Set Paid</button>
-                             <button id="btnRemove" class="btn btn-sm" ng-disabled="item.amountPaid > 0" ng-click="doDeleteItem(item._id)">Delete</button>
-                        </td> 
+                        
+                        <td>
+                            <button id="btnAddAmount" class="btn btn-sm" ng-click="doAddPayment(item.itemName, item.amountPlanned, item.amountPaid, item._id)">Add</button>
+                            <button id="btnSetPaid" class="btn btn-sm" ng-disabled="item.amountPaid > 0" ng-click="doCompletePayment(item.itemName, item.amountPlanned, item._id)">Set Paid</button>
+                            <button id="btnEdit" class="btn btn-sm" ng-click="doModifyItem(item.itemName, item.amountPlanned, item.amountPaid, item._id)">Edit</button>
+                            <button id="btnRemove" class="btn btn-sm" ng-disabled="item.amountPaid > 0" ng-click="doDeleteItem(item._id)">Delete</button>
+                        </td>
+                            
                     </tr>
                     <tr>
                         <td bgcolor="#b55d4d" align="center">
