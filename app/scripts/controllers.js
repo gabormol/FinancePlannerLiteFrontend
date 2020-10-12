@@ -208,7 +208,27 @@ angular.module('financeplannerApp')
                 $scope.showLoading = false;
                 ngDialog.close();
                 updateStatistics();
-                $state.go($state.current, {}, {reload: true});           
+                //$state.go($state.current, {}, {reload: true});  
+                console.log("Finding new for: " + newItemName);
+                                
+                //$scope.timesheet = timesheet;
+                var index = $scope.timesheet[0].items.findIndex(obj => {
+                    return obj._id === itemId
+                  });
+                // We need a response, because the item's _id is changed, so it needs to be read from it!!!
+                var itemsArray = response.items;
+                itemsArray.forEach(element => {
+                    if (element.itemName === newItemName){
+                        $scope.timesheet[0].items[index]._id = element._id;
+                    }
+                });
+                //var index = $scope.timesheet[0].items.find(obj => {
+                //    return obj._id === itemId
+                //  });
+                //$scope.timesheet[0].items[index].itemName = newItemName;
+                //$scope.timesheet[0].items[index].amountPlanned = newAmountPlanned;
+                $scope.timesheet[0].items[index].amountPaid = $scope.modItem.amountPaid;
+                //$state.go($state.current, {}, {reload: true});         
             },
             function (response) {
                 $scope.message = "Error: " + response.status + " " + response.statusText;
@@ -331,8 +351,7 @@ angular.module('financeplannerApp')
                                 //  });
                                 //$scope.timesheet[0].items[index].itemName = newItemName;
                                 //$scope.timesheet[0].items[index].amountPlanned = newAmountPlanned;
-                                $scope.timesheet[0].items[index].amountPaid = $scope.modItem.amountPaid;
-                                //$state.go($state.current, {}, {reload: true});           
+                                $scope.timesheet[0].items[index].amountPaid = $scope.modItem.amountPaid;           
                             },
                             function (response) {
                                 $scope.message = "Error: " + response.status + " " + response.statusText;
