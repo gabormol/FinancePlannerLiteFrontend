@@ -121,7 +121,7 @@ angular.module('financeplannerApp')
     var timesheet = timesheetFactory.query(
             function (response) {
                 $scope.timesheet = response;
-                console.log($scope.timesheet[0].items);
+                //console.log($scope.timesheet[0].items);
                 $scope.showTable = true;
             },
             function (response) {
@@ -278,8 +278,6 @@ angular.module('financeplannerApp')
                                 updateStatistics();
 
                                 console.log("Finding new for: " + newItemName);
-                                console.log("Finding new itemId: " + JSON.stringify(response.items[0]));
-                                console.log("Finding new itemId: " + response.items[0].itemName);
                                 
                                 //$scope.timesheet = timesheet;
                                 var index = $scope.timesheet[0].items.findIndex(obj => {
