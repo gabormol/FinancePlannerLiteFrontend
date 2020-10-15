@@ -77,12 +77,15 @@ angular.module('financeplannerApp')
   }
  
   function useCredentials(credentials) {
-    isAuthenticated = true;
-    username = credentials.username;
-    authToken = credentials.token;
- 
-    // Set the token as header for your requests!
-    $http.defaults.headers.common['x-access-token'] = authToken;
+      if (authToken !== undefined){
+        isAuthenticated = true;
+      }
+      
+      username = credentials.username;
+      authToken = credentials.token;
+      
+      // Set the token as header for your requests!
+      $http.defaults.headers.common['x-access-token'] = authToken;
   }
  
   function destroyUserCredentials() {
@@ -168,6 +171,10 @@ angular.module('financeplannerApp')
     authFac.getUsername = function() {
         return username;  
     };
+
+    authFac.deleteToken = function() {
+        return destroyUserCredentials;
+    }
     
 
     loadUserCredentials();

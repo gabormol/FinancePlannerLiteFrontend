@@ -2,7 +2,7 @@
 
 angular.module('financeplannerApp')
 
-.controller('ActionsController', ['$scope', 'AuthFactory', function ($scope, AuthFactory) {
+.controller('ActionsController', ['$scope', 'AuthFactory', '$state', function ($scope, AuthFactory, $state) {
     
     $scope.firstName = '';
     
@@ -10,12 +10,20 @@ angular.module('financeplannerApp')
         function (response){
             if(typeof response[0].firstname !== 'undefined' && response[0].firstname.length>0){
                 $scope.firstName = " " + response[0].firstname;
+                $scope.loggedIn = true;
             } else {
                 
             }
         },
         function (response){
             $scope.message = "Get name error: " + response.status + " " + response.statusText;
+            if (response.status === 401){
+                console.log("Login Expired " + $scope.loggedIn);
+                $scope.loggedIn = false;
+                AuthFactory.deleteToken;
+                console.log("Going to the home " + $scope.loggedIn);
+                $state.go('app', {}, {reload: true});
+            }
         }
     );
     
@@ -240,7 +248,8 @@ angular.module('financeplannerApp')
     var updateStatistics = function(){
         statisticsFactory.query(
             function (response) {
-                $scope.statistics = response;
+                $scope.statistics[0].totalSpent = response[0].totalSpent;
+                $scope.statistics[0].plannedToSpend = response[0].plannedToSpend;
                 $scope.balance = $scope.statistics[0].plannedToSpend - $scope.statistics[0].totalSpent;
                 if ($scope.balance >= 0){
                     $scope.status = "ON TRACK";
@@ -379,7 +388,8 @@ angular.module('financeplannerApp')
     var updateStatistics = function(){
         statisticsFactory.query(
             function (response) {
-                $scope.statistics = response;
+                $scope.statistics[0].totalSpent = response[0].totalSpent;
+                $scope.statistics[0].plannedToSpend = response[0].plannedToSpend;
                 $scope.balance = $scope.statistics[0].plannedToSpend - $scope.statistics[0].totalSpent;
                 if ($scope.balance >= 0){
                     $scope.status = "ON TRACK";
@@ -686,8 +696,8 @@ angular.module('financeplannerApp')
 
         AuthFactory.login($scope.loginData, function(){
             if ($scope.loggedIn){
-            $state.go('app.actions');
-        }
+                $state.go('app.actions');
+            }
         });
 
     };
