@@ -60,6 +60,7 @@ angular.module('financeplannerApp')
     var authFac = {};
     var TOKEN_KEY = 'Token';
     var isAuthenticated = false;
+    var detectedExpiredToken = false;
     var username = '';
     var authToken = undefined;
     
@@ -77,7 +78,7 @@ angular.module('financeplannerApp')
   }
  
   function useCredentials(credentials) {
-      if (authToken !== undefined){
+      if (detectedExpiredToken !== true){
         isAuthenticated = true;
       }
       
@@ -92,6 +93,7 @@ angular.module('financeplannerApp')
     authToken = undefined;
     username = '';
     isAuthenticated = false;
+    detectedExpiredToken = true;
     $http.defaults.headers.common['x-access-token'] = authToken;
     $localStorage.remove(TOKEN_KEY);
   }
