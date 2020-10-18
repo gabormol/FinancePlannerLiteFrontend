@@ -18,8 +18,8 @@ angular.module('financeplannerApp')
         function (response){
             $scope.message = "Get name error: " + response.status + " " + response.statusText;
             if (response.status === 401){
-                console.log("Login Expired " + $scope.loggedIn);
                 $scope.loggedIn = false;
+                console.log("Login Expired, set loggedIn to: " + $scope.loggedIn);
                 AuthFactory.deleteToken;
                 console.log("Going to the home " + $scope.loggedIn);
                 $state.go('app', {}, {reload: true});
@@ -651,6 +651,24 @@ angular.module('financeplannerApp')
 
 .controller('HeaderController', ['$scope', '$state', '$rootScope', 'ngDialog', '$localStorage', 'AuthFactory', function ($scope, $state, $rootScope, ngDialog, $localStorage, AuthFactory) {
 
+    AuthFactory.myData().query(
+        function (response){
+            if(typeof response[0].firstname !== 'undefined' && response[0].firstname.length>0){
+                $scope.firstName = " " + response[0].firstname;
+                $scope.loggedIn = true;
+            } else {
+                
+            }
+        },
+        function (response){
+            $scope.message = "Get name error: " + response.status + " " + response.statusText;
+            if (response.status === 401){
+                $scope.loggedIn = false;
+                console.log("Login Expired, set loggedIn to: " + $scope.loggedIn);
+                AuthFactory.deleteToken;
+            }
+        }
+    );
     $scope.loggedIn = false;
     $scope.username = '';
     
@@ -709,7 +727,6 @@ angular.module('financeplannerApp')
 }])
 
 .controller('UserSettingsController', ['$scope', 'userSettingsFactory', 'ngDialog', '$state', function ($scope, userSettingsFactory, ngDialog, $state) {
-    
     $scope.userSettings = {
         currencyDecimals : '',
         currencySymbol : '',
